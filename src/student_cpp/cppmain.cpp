@@ -1,7 +1,10 @@
 #include "ctrain_handler.h"
 #include "locomotive.h"
+#include "locomotiveworker.h"
 
 #include <QList>
+#include <QThread>
+#include <QObject>
 
 //Creation d'une locomotive
 static Locomotive locomotive;
@@ -14,11 +17,13 @@ void emergency_stop()
 }
 
 
-void tLoco1() {
+void tLoco1()
+{
 
     //Initialisation d'un parcours
     QList<int> parcours;
-    parcours << 7 << 15 << 14 << 7 << 6 << 5 << 34 << 33 << 32 << 25 << 24 << 23 << 16;
+    parcours << 7 << 15 << 14 << 7 << 6 << 5 << 34 << 33 << 32 << 25 << 24;
+//    parcours << 7 << 15 << 14 << 7 << 6 << 5 << 34 << 33 << 32 << 25 << 24 << 23 << 16;
 //    parcours << 26 << 25 << 1 << 19 << 20 << 8 << 7 << 13;
 //    parcours << 2 << 7 << 15 << 18 << 23 << 22 << 1 << 2;
 
@@ -44,37 +49,22 @@ void tLoco1() {
     diriger_aiguillage(5, TOUT_DROIT,       0);
 
 
-// TODO : Inverser le parcours
+    // https://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/
+    QThread* thread = new QThread;
+    LocomotiveWorker* lw1 = new LocomotiveWorker(locomotive, parcours);
+    lw1->moveToThread(thread);
 
-    int nbTours = 2;
-    for(;;) {
-        locomotive.allumerPhares();
-        locomotive.demarrer();
-        locomotive.afficherMessage("Ready!");
+    QObject::connect(thread, SIGNAL(started()), lw1, SLOT(process()));
+    QObject::connect(lw1, SIGNAL(finished()), thread, SLOT(quit()));
+    QObject::connect(lw1, SIGNAL(finished()), lw1, SLOT(deleteLater()));
+    QObject::connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    thread->start();
 
-        for(int j = 0; j < nbTours; ++j) {
-            //Attente du passage sur les contacts
-            for (int i = 1; i < parcours.size(); i++) {
-                attendre_contact(parcours.at(i));
-                afficher_message(qPrintable(QString("The engine no. %1 has reached contact no. %2.").arg(locomotive.numero()).arg(parcours.at(i))));
-                locomotive.afficherMessage(QString("I've reached contact no. %1.").arg(parcours.at(i)));
-            }
-        }
-
-        //Arreter la locomotive
-        locomotive.arreter();
-        locomotive.afficherMessage("Yeah, piece of cake!");
-        locomotive.inverser();
-
-//        QList<T> result;
-//        result.reserve( parcours.size() );
-//        std::reverse_copy( parcours.begin(), parcours.end(), std::back_inserter( parcours ) );
-    }
-
-
+    // TODO : Inverser le parcours
 }
 
-void tLoco2() {
+void tLoco2()
+{
 
 }
 
@@ -82,6 +72,7 @@ void tLoco2() {
 //Fonction principale
 int cmain()
 {
+
     afficher_message("Hit play to start the simulation...");
 
     //Choix de la maquette
