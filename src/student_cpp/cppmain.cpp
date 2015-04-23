@@ -13,17 +13,14 @@ void emergency_stop()
     afficher_message("\nSTOP!");
 }
 
-//Fonction principale
-int cmain()
-{
-    afficher_message("Hit play to start the simulation...");
 
-    //Choix de la maquette
-    selection_maquette(MAQUETTE_A);
+void tLoco1() {
 
     //Initialisation d'un parcours
     QList<int> parcours;
-    parcours << 7 << 15 << 14 << 7 << 6 << 5 << 34 << 33 << 32 << 25 << 24;
+    parcours << 7 << 15 << 14 << 7 << 6 << 5 << 34 << 33 << 32 << 25 << 24 << 23 << 16;
+//    parcours << 26 << 25 << 1 << 19 << 20 << 8 << 7 << 13;
+//    parcours << 2 << 7 << 15 << 18 << 23 << 22 << 1 << 2;
 
     //Initialisation des aiguillages
     diriger_aiguillage(8,  DEVIE,       0);
@@ -33,6 +30,7 @@ int cmain()
     diriger_aiguillage(11, TOUT_DROIT,  0);
     diriger_aiguillage(17, TOUT_DROIT,  0);
     diriger_aiguillage(23, TOUT_DROIT,  0);
+
 
     //Initialisation de la locomotive
     locomotive.fixerNumero(1);
@@ -74,6 +72,23 @@ int cmain()
     }
 
 
+}
+
+void tLoco2() {
+
+}
+
+
+//Fonction principale
+int cmain()
+{
+    afficher_message("Hit play to start the simulation...");
+
+    //Choix de la maquette
+    selection_maquette(MAQUETTE_A);
+
+    // Thread Loco 1
+    tLoco1();
 
     //Fin de la simulation
     mettre_maquette_hors_service();
