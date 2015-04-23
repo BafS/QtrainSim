@@ -42,15 +42,6 @@ void runLocomotive1()
 //    parcours << 26 << 25 << 1 << 19 << 20 << 8 << 7 << 13;
 //    parcours << 2 << 7 << 15 << 18 << 23 << 22 << 1 << 2;
 
-    //Initialisation des aiguillages
-    diriger_aiguillage(8,  DEVIE,       0);
-    diriger_aiguillage(2,  DEVIE,       0);
-    diriger_aiguillage(20, DEVIE,       0);
-    diriger_aiguillage(14, DEVIE,       0);
-    diriger_aiguillage(11, TOUT_DROIT,  0);
-    diriger_aiguillage(17, TOUT_DROIT,  0);
-    diriger_aiguillage(23, TOUT_DROIT,  0);
-
 
     //Initialisation de la locomotive
     locomotive.fixerNumero(1);
@@ -61,7 +52,7 @@ void runLocomotive1()
 //    locomotive.afficherMessage("Ready!");
 
 
-    diriger_aiguillage(5, TOUT_DROIT,       0);
+
 
     addLocomotiveThread(locomotive, parcours);
 
@@ -71,7 +62,19 @@ void runLocomotive1()
 
 void runLocomotive2()
 {
+    QList<int> parcours;
+    parcours << 26 << 25 << 1 << 19 << 20 << 8 << 7 << 13;
 
+    //Initialisation de la locomotive
+    locomotive.fixerNumero(2);
+    locomotive.fixerVitesse(25);
+    locomotive.fixerPosition(20, 21);
+//    locomotive.allumerPhares();
+//    locomotive.demarrer();
+//    locomotive.afficherMessage("Ready! [Loco 2]");
+
+
+    addLocomotiveThread(locomotive, parcours);
 }
 
 
@@ -84,8 +87,20 @@ int cmain()
     //Choix de la maquette
     selection_maquette(MAQUETTE_A);
 
+    //Initialisation des aiguillages
+    diriger_aiguillage(8,  DEVIE,       0);
+    diriger_aiguillage(2,  DEVIE,       0);
+    diriger_aiguillage(20, DEVIE,       0);
+    diriger_aiguillage(14, DEVIE,       0);
+    diriger_aiguillage(11, TOUT_DROIT,  0);
+    diriger_aiguillage(17, TOUT_DROIT,  0);
+    diriger_aiguillage(23, TOUT_DROIT,  0);
+
+    diriger_aiguillage(5, TOUT_DROIT,       0);
+
     // Thread Loco 1
     runLocomotive1();
+    runLocomotive2();
 
     //Fin de la simulation
     mettre_maquette_hors_service();
