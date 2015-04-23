@@ -17,9 +17,24 @@ void emergency_stop()
 }
 
 
-void tLoco1()
+// Lance un nouveau thread pour une locomotive et son parcours
+void addLocomotiveThread(Locomotive& locomotive, QList<int>& parcours)
 {
+    // https://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/
+    QThread* thread = new QThread;
+    LocomotiveWorker* lw1 = new LocomotiveWorker(locomotive, parcours);
+    lw1->moveToThread(thread);
 
+    QObject::connect(thread, SIGNAL(started()), lw1, SLOT(process()));
+    QObject::connect(lw1, SIGNAL(finished()), thread, SLOT(quit()));
+    QObject::connect(lw1, SIGNAL(finished()), lw1, SLOT(deleteLater()));
+    QObject::connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    thread->start();
+}
+
+
+void runLocomotive1()
+{
     //Initialisation d'un parcours
     QList<int> parcours;
     parcours << 7 << 15 << 14 << 7 << 6 << 5 << 34 << 33 << 32 << 25 << 24;
@@ -48,22 +63,13 @@ void tLoco1()
 
     diriger_aiguillage(5, TOUT_DROIT,       0);
 
-
-    // https://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/
-    QThread* thread = new QThread;
-    LocomotiveWorker* lw1 = new LocomotiveWorker(locomotive, parcours);
-    lw1->moveToThread(thread);
-
-    QObject::connect(thread, SIGNAL(started()), lw1, SLOT(process()));
-    QObject::connect(lw1, SIGNAL(finished()), thread, SLOT(quit()));
-    QObject::connect(lw1, SIGNAL(finished()), lw1, SLOT(deleteLater()));
-    QObject::connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-    thread->start();
+    addLocomotiveThread(locomotive, parcours);
 
     // TODO : Inverser le parcours
 }
 
-void tLoco2()
+
+void runLocomotive2()
 {
 
 }
@@ -79,7 +85,7 @@ int cmain()
     selection_maquette(MAQUETTE_A);
 
     // Thread Loco 1
-    tLoco1();
+    runLocomotive1();
 
     //Fin de la simulation
     mettre_maquette_hors_service();
