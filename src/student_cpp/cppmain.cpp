@@ -30,6 +30,8 @@ void addLocomotiveThread(Locomotive& locomotive, QList<int>& parcours)
     QObject::connect(lw1, SIGNAL(finished()), lw1, SLOT(deleteLater()));
     QObject::connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
     thread->start();
+    thread->wait();
+    delete thread;
 }
 
 

@@ -96,7 +96,9 @@ SOURCES += \
     src/voieaiguillagetriple.cpp \
     src/ctrain_handler.cpp \
     src/student_cpp/locomotive.cpp \
-    src/student_cpp/locomotiveworker.cpp
+    src/student_cpp/locomotiveworker.cpp \
+    src/student_cpp/criticalsection.cpp \
+    src/student_cpp/criticalsectionmanager.cpp
 
 HEADERS += \
     src/mainwindow.h \
@@ -121,6 +123,8 @@ HEADERS += \
     src/voieaiguillagetriple.h \
     src/ctrain_handler.h \
     src/student_cpp/locomotive.h \
-    src/student_cpp/locomotiveworker.h
+    src/student_cpp/locomotiveworker.h \
+    src/student_cpp/criticalsection.h \
+    src/student_cpp/criticalsectionmanager.h
 
 OTHER_FILES += infosVoies.txt
