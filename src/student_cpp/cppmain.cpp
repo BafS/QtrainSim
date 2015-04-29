@@ -37,8 +37,8 @@ void runLocomotive1()
 {
     //Initialisation d'un parcours
     QList<int> parcours;
-    parcours << 7 << 15 << 14 << 7 << 6 << 5 << 34 << 33 << 32 << 25 << 24;
-//    parcours << 7 << 15 << 14 << 7 << 6 << 5 << 34 << 33 << 32 << 25 << 24 << 23 << 16;
+//    parcours << 7 << 15 << 14 << 7 << 6 << 5 << 34 << 33 << 32 << 25 << 24;
+    parcours << 15 << 14 << 7 << 6 << 5 << 34 << 33 << 32 << 25 << 24 << 23 << 16;
 //    parcours << 26 << 25 << 1 << 19 << 20 << 8 << 7 << 13;
 //    parcours << 2 << 7 << 15 << 18 << 23 << 22 << 1 << 2;
 
@@ -100,7 +100,7 @@ int cmain()
 
     // Thread Loco 1
     runLocomotive1();
-    runLocomotive2();
+//    runLocomotive2();
 
     //Fin de la simulation
     mettre_maquette_hors_service();

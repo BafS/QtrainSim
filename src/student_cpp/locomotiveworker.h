@@ -3,6 +3,7 @@
 
 #include <QThread>
 #include <QObject>
+#include <QDebug>
 #include "locomotive.h"
 #include "ctrain_handler.h"
 
@@ -18,6 +19,7 @@ public:
     ~LocomotiveWorker();
 
 signals:
+    void finished();
 
 public slots:
     void process();

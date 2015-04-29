@@ -20,12 +20,22 @@ void LocomotiveWorker::process() {
 
         for(int j = 0; j < nbTours; ++j) {
             //Attente du passage sur les contacts
-            for (int i = 1; i < parcours.size(); i++) {
+            for (int i = 0; i < parcours.size(); i++) {
                 attendre_contact(parcours.at(i));
                 afficher_message(qPrintable(QString("The engine no. %1 has reached contact no. %2.").arg(locomotive.numero()).arg(parcours.at(i))));
                 locomotive.afficherMessage(QString("I've reached contact no. %1.").arg(parcours.at(i)));
             }
+        }        
+
+        // Reverse parcours
+        QList<int> parcoursRevers;
+        for(int a = 0; a < parcours.length(); ++a) {
+            parcoursRevers.push_front(parcours.at(a));
         }
+        parcours = parcoursRevers;
+
+
+//        qDebug() << parcoursRevers << "   -   " << parcours;
 
         //Arreter la locomotive
         locomotive.arreter();
@@ -35,5 +45,7 @@ void LocomotiveWorker::process() {
 //        QList<T> result;
 //        result.reserve( parcours.size() );
 //        std::reverse_copy( parcours.begin(), parcours.end(), std::back_inserter( parcours ) );
+
+        emit finished();
     }
 }
