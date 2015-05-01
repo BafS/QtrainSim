@@ -5,7 +5,6 @@
 
 class Locomotive
 {
-
     bool running;
 public:
 
@@ -66,10 +65,11 @@ public:
     //! Arrete la locomotive.
     void arreter();
 
-
-// ADDED
+    // Inverser le sense de la loco
     void inverser();
-     bool isRunning();
+
+    // si en marche
+    bool isRunning();
 
 private:
     int _numero;

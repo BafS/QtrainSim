@@ -5,24 +5,20 @@
 #include <QList>
 #include <QThread>
 #include <QObject>
-
-//Creation d'une locomotive
-//static Locomotive locomotive;
+#include <QMap>
 
 //Arret d'urgence
 void emergency_stop()
 {
-//    locomotive.arreter();
     afficher_message("\nSTOP!");
 }
 
-
 // Lance un nouveau thread pour une locomotive et son parcours
-void addLocomotiveThread(Locomotive * locomotive, QList<int>& parcours)
+void addLocomotiveThread(Locomotive * locomotive, QList<int>& parcours, QMap<QString,QPair<int,int> >& aiguillages)
 {
     // https://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/
     QThread* thread = new QThread;
-    LocomotiveWorker* lw1 = new LocomotiveWorker(locomotive, parcours);
+    LocomotiveWorker* lw1 = new LocomotiveWorker(locomotive, parcours, aiguillages);
     lw1->moveToThread(thread);
 
     QObject::connect(thread, SIGNAL(started()), lw1, SLOT(process()));
@@ -30,9 +26,6 @@ void addLocomotiveThread(Locomotive * locomotive, QList<int>& parcours)
     QObject::connect(lw1, SIGNAL(finished()), lw1, SLOT(deleteLater()));
     QObject::connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
     thread->start();
-//    thread->wait();
-//    delete thread;
-//    delete locomotive;
 }
 
 
@@ -40,10 +33,16 @@ void runLocomotive1()
 {
     //Initialisation d'un parcours
     QList<int> parcours;
-//    parcours << 7 << 15 << 14 << 7 << 6 << 5 << 34 << 33 << 32 << 25 << 24;
     parcours << 15 << 14 << 7 << 6 << 5 << 34 << 33 << 32 << 25 << 24 << 23 << 16;
-//    parcours << 26 << 25 << 1 << 19 << 20 << 8 << 7 << 13;
-    parcours << 10 << 4 << 3 << 2 << 1 << 31 << 33 << 2;
+
+   /*
+    * Choix des aiguillages avec une QMap:
+    * Key type:QString: noContact1 - noContact2 (trançon sur le quel l'aguillage doit être modifié)
+    * Value type QPair<int,int>: <no de l'aiguillage, Valeur de l'aiguillage>
+    */
+    QMap<QString, QPair<int,int> > aiguillages;
+    aiguillages["23-24"] = QPair<int,int>(14,DEVIE);
+    aiguillages["33-34"] = QPair<int,int>(21,DEVIE);
 
 
     //Initialisation de la locomotive
@@ -51,46 +50,41 @@ void runLocomotive1()
     locomotive->fixerNumero(1);
     locomotive->fixerVitesse(8);
     locomotive->fixerPosition(16, 23);
-//    locomotive.allumerPhares();
-//    locomotive.demarrer();
-//    locomotive.afficherMessage("Ready!");
 
-    addLocomotiveThread(locomotive, parcours);
-
-    // TODO : Inverser le parcours
+    // Création d'un thread pour la locomotive
+    addLocomotiveThread(locomotive, parcours,aiguillages);
 }
 
 
 void runLocomotive2()
 {
     QList<int> parcours;
-//    parcours << 26 << 25 << 1 << 19 << 20 << 8 << 7 << 13;
-//   parcours << 5 << 6 << 7 << 14 << 15;
-//  parcours << 32 << 33 <<34 << 5 << 6 << 7 << 14 << 15;
-         parcours << 12 << 11 << 10 << 4 << 3 << 2 << 1 << 31 << 33 << 32 << 24 << 23 << 16 <<  15 ;
+    parcours << 12 << 11 << 10 << 4 << 3 << 2 << 1 << 31 << 33 << 32 << 24 << 19 << 13 ;
 
-
+    /*
+     * Choix des aiguillages avec une QMap:
+     * Key type:QString: noContact1 - noContact2 (trançon sur le quel l'aguillage doit être modifié)
+     * Value type QPair<int,int>: <no de l'aiguillage, Valeur de l'aiguillage>
+     */
+    QMap<QString, QPair<int,int> > aiguillages;
+    aiguillages["19-24"] = QPair<int,int>(14,TOUT_DROIT);
+    aiguillages["31-33"] = QPair<int,int>(21,TOUT_DROIT);
+    aiguillages["1-2"] = QPair<int,int>(1,TOUT_DROIT);
 
     //Initialisation de la locomotive
-//    Locomotive locomotive;
     Locomotive * locomotive = new Locomotive;
     locomotive->fixerNumero(2);
-    locomotive->fixerVitesse(10);
-//    locomotive->fixerPosition(5, 34);
+    locomotive->fixerVitesse(8);
     locomotive->fixerPosition(12, 13);
-//    locomotive.allumerPhares();
-//    locomotive.demarrer();
-//    locomotive.afficherMessage("Ready! [Loco 2]");
 
-
-    addLocomotiveThread(locomotive, parcours);
+    // Création d'un thread pour la locomotive
+    addLocomotiveThread(locomotive, parcours, aiguillages);
 }
 
 
 //Fonction principale
 int cmain()
 {
-
     afficher_message("Hit play to start the simulation...");
 
     //Choix de la maquette
@@ -101,14 +95,14 @@ int cmain()
     diriger_aiguillage(2,  DEVIE,       0);
     diriger_aiguillage(20, DEVIE,       0);
     diriger_aiguillage(5,  DEVIE,       0);
-    diriger_aiguillage(4,  TOUT_DROIT,       0);
-    diriger_aiguillage(10,  TOUT_DROIT,       0);
+    diriger_aiguillage(4,  TOUT_DROIT,  0);
+    diriger_aiguillage(10, TOUT_DROIT,  0);
     diriger_aiguillage(14, DEVIE,       0);
     diriger_aiguillage(11, TOUT_DROIT,  0);
+    diriger_aiguillage(7, TOUT_DROIT,  0);
     diriger_aiguillage(17, TOUT_DROIT,  0);
     diriger_aiguillage(23, TOUT_DROIT,  0);
-
-    diriger_aiguillage(5, TOUT_DROIT,       0);
+    diriger_aiguillage(5,  TOUT_DROIT,  0);
 
     // Thread Loco 1
     runLocomotive1();

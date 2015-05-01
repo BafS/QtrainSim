@@ -97,7 +97,6 @@ SOURCES += \
     src/ctrain_handler.cpp \
     src/student_cpp/locomotive.cpp \
     src/student_cpp/locomotiveworker.cpp \
-    src/student_cpp/criticalsection.cpp \
     src/student_cpp/criticalsectionmanager.cpp
 
 HEADERS += \

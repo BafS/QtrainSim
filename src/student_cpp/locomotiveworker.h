@@ -17,14 +17,15 @@ class LocomotiveWorker : public QObject
     QList<CriticalSection* > lockedSc;
     Locomotive* locomotive;
     QList<int> parcours;
+    QMap<QString,QPair<int,int> > aiguillages;
 
 public:
-    explicit LocomotiveWorker(Locomotive * parent, QList<int> &p);
+    explicit LocomotiveWorker(Locomotive * parent, QList<int> &p, QMap<QString,QPair<int,int> >& aiguillages);
     ~LocomotiveWorker();
-    bool request(CriticalSection c);
 
     void unlockCriticalSections(int currentPosition);
     void receiveResponse(int currentPosition);
+    void checkAiguillage(int noLoco,int noContact1, int noContact2);
 
 signals:
     void finished();
