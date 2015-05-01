@@ -6,6 +6,7 @@
 class Locomotive
 {
 
+    bool running;
 public:
 
     /** Constructeur.
@@ -68,6 +69,7 @@ public:
 
 // ADDED
     void inverser();
+     bool isRunning();
 
 private:
     int _numero;

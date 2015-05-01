@@ -14,7 +14,7 @@ Locomotive::Locomotive(int numero, int vitesse) :
     _vitesse(vitesse),
     _enFonction(false)
 {
-
+    running = false;
 }
 
 
@@ -22,6 +22,11 @@ Locomotive::Locomotive(int numero, int vitesse) :
 void Locomotive::inverser() {
 //    inverserSens
     inverser_sens_loco(_numero);
+}
+
+bool Locomotive::isRunning()
+{
+    return running;
 }
 
 int Locomotive::numero() const
@@ -71,10 +76,12 @@ void Locomotive::demarrer()
 {
     mettre_vitesse_progressive(_numero, _vitesse);
     _enFonction = true;
+    running = true;
 }
 
 void Locomotive::arreter()
 {
     arreter_loco(_numero);
     _enFonction = false;
+    running = false;
 }

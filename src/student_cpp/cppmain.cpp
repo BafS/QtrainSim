@@ -7,18 +7,18 @@
 #include <QObject>
 
 //Creation d'une locomotive
-static Locomotive locomotive;
+//static Locomotive locomotive;
 
 //Arret d'urgence
 void emergency_stop()
 {
-    locomotive.arreter();
+//    locomotive.arreter();
     afficher_message("\nSTOP!");
 }
 
 
 // Lance un nouveau thread pour une locomotive et son parcours
-void addLocomotiveThread(Locomotive& locomotive, QList<int>& parcours)
+void addLocomotiveThread(Locomotive * locomotive, QList<int>& parcours)
 {
     // https://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/
     QThread* thread = new QThread;
@@ -30,8 +30,9 @@ void addLocomotiveThread(Locomotive& locomotive, QList<int>& parcours)
     QObject::connect(lw1, SIGNAL(finished()), lw1, SLOT(deleteLater()));
     QObject::connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
     thread->start();
-    thread->wait();
-    delete thread;
+//    thread->wait();
+//    delete thread;
+//    delete locomotive;
 }
 
 
@@ -42,19 +43,17 @@ void runLocomotive1()
 //    parcours << 7 << 15 << 14 << 7 << 6 << 5 << 34 << 33 << 32 << 25 << 24;
     parcours << 15 << 14 << 7 << 6 << 5 << 34 << 33 << 32 << 25 << 24 << 23 << 16;
 //    parcours << 26 << 25 << 1 << 19 << 20 << 8 << 7 << 13;
-//    parcours << 2 << 7 << 15 << 18 << 23 << 22 << 1 << 2;
+    parcours << 10 << 4 << 3 << 2 << 1 << 31 << 33 << 2;
 
 
     //Initialisation de la locomotive
-    locomotive.fixerNumero(1);
-    locomotive.fixerVitesse(25);
-    locomotive.fixerPosition(16, 23);
+    Locomotive * locomotive = new Locomotive;
+    locomotive->fixerNumero(1);
+    locomotive->fixerVitesse(8);
+    locomotive->fixerPosition(16, 23);
 //    locomotive.allumerPhares();
 //    locomotive.demarrer();
 //    locomotive.afficherMessage("Ready!");
-
-
-
 
     addLocomotiveThread(locomotive, parcours);
 
@@ -65,12 +64,20 @@ void runLocomotive1()
 void runLocomotive2()
 {
     QList<int> parcours;
-    parcours << 26 << 25 << 1 << 19 << 20 << 8 << 7 << 13;
+//    parcours << 26 << 25 << 1 << 19 << 20 << 8 << 7 << 13;
+//   parcours << 5 << 6 << 7 << 14 << 15;
+//  parcours << 32 << 33 <<34 << 5 << 6 << 7 << 14 << 15;
+         parcours << 12 << 11 << 10 << 4 << 3 << 2 << 1 << 31 << 33 << 32 << 24 << 23 << 16 <<  15 ;
+
+
 
     //Initialisation de la locomotive
-    locomotive.fixerNumero(2);
-    locomotive.fixerVitesse(25);
-    locomotive.fixerPosition(20, 21);
+//    Locomotive locomotive;
+    Locomotive * locomotive = new Locomotive;
+    locomotive->fixerNumero(2);
+    locomotive->fixerVitesse(10);
+//    locomotive->fixerPosition(5, 34);
+    locomotive->fixerPosition(12, 13);
 //    locomotive.allumerPhares();
 //    locomotive.demarrer();
 //    locomotive.afficherMessage("Ready! [Loco 2]");
@@ -93,6 +100,9 @@ int cmain()
     diriger_aiguillage(8,  DEVIE,       0);
     diriger_aiguillage(2,  DEVIE,       0);
     diriger_aiguillage(20, DEVIE,       0);
+    diriger_aiguillage(5,  DEVIE,       0);
+    diriger_aiguillage(4,  TOUT_DROIT,       0);
+    diriger_aiguillage(10,  TOUT_DROIT,       0);
     diriger_aiguillage(14, DEVIE,       0);
     diriger_aiguillage(11, TOUT_DROIT,  0);
     diriger_aiguillage(17, TOUT_DROIT,  0);
@@ -102,7 +112,7 @@ int cmain()
 
     // Thread Loco 1
     runLocomotive1();
-//    runLocomotive2();
+    runLocomotive2();
 
     //Fin de la simulation
     mettre_maquette_hors_service();

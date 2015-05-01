@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
 {
 
     QApplication app(argc,argv);
+    app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 
     //Init the marklin maquette
 #ifdef MAQUETTE
